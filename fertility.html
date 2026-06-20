@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}Soil Fertility — Agri-Smart{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div class="breadcrumb">Predictions / Fertility</div>
+  <h2>🌍 Soil Fertility Score</h2>
+  <p>Analyse your soil's overall health — returns Low / Medium / High fertility grade</p>
+</div>
+<div class="card">
+  <div class="card-title">⚗️ Nutrient & Soil Properties</div>
+  <div class="form-grid">
+    <div class="form-group"><label>Nitrogen (N)</label><input type="number" id="nitrogen" placeholder="0–100"></div>
+    <div class="form-group"><label>Phosphorous (P)</label><input type="number" id="phosphorous" placeholder="0–100"></div>
+    <div class="form-group"><label>Potassium (K)</label><input type="number" id="potassium" placeholder="0–100"></div>
+    <div class="form-group"><label>Soil pH</label><input type="number" id="ph" placeholder="4.0–9.0" step="0.1"></div>
+    <div class="form-group">
+      <label>Organic Matter (%)</label>
+      <input type="number" id="organic_matter" placeholder="0.1–6.0" step="0.1">
+      <span class="hint">Good soil: 3–6%</span>
+    </div>
+    <div class="form-group"><label>Moisture (%)</label><input type="number" id="moisture" placeholder="10–80"></div>
+  </div>
+  <button class="btn-predict" onclick="predict()">
+    <span class="spinner" id="spinner"></span>
+    <span id="btn-text">🌍 Analyse Soil Fertility</span>
+  </button>
+</div>
+<div class="result-box" id="result">
+  <div class="result-icon">🌍</div>
+  <div class="result-label">Soil Fertility Grade</div>
+  <div class="result-value" id="result-value">—</div>
+  <div class="confidence-bar-wrap">
+    <div class="confidence-label"><span>Model Confidence</span><span id="conf-num">—</span></div>
+    <div class="confidence-bar"><div class="confidence-fill" id="conf-fill" style="width:0%"></div></div>
+  </div>
+</div>
+<script>
+async function predict() {
+  const fields = ['nitrogen','phosphorous','potassium','ph','organic_matter','moisture'];
+  const data = {};
+  for (const f of fields) { const v = document.getElementById(f).value; if (!v) { alert('Fill all fields!'); return; } data[f]=v; }
+  document.getElementById('spinner').style.display='inline-block';
+  document.getElementById('btn-text').textContent='Analysing...';
+  const res = await fetch('/predict/fertility',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
+  const json = await res.json();
+  document.getElementById('spinner').style.display='none';
+  document.getElementById('btn-text').textContent='🌍 Analyse Soil Fertility';
+  if(json.error){alert('Error: '+json.error);return;}
+  const rv = document.getElementById('result-value');
+  rv.textContent = json.result;
+  rv.className = 'result-value risk-'+json.result.toLowerCase();
+  document.getElementById('conf-num').textContent=json.confidence+'%';
+  document.getElementById('conf-fill').style.width=json.confidence+'%';
+  document.getElementById('result').classList.add('show');
+}
+</script>
+{% endblock %}

@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}Irrigation Need — Agri-Smart{% endblock %}
+{% block content %}
+<div class="page-header">
+  <div class="breadcrumb">Predictions / Irrigation</div>
+  <h2>💧 Irrigation Water Need</h2>
+  <p>Predict whether your crop needs Low / Moderate / High irrigation based on current conditions</p>
+</div>
+<div class="card">
+  <div class="card-title">🌡 Field Conditions</div>
+  <div class="form-grid">
+    <div class="form-group"><label>Temperature (°C)</label><input type="number" id="temperature" placeholder="e.g. 30"></div>
+    <div class="form-group"><label>Humidity (%)</label><input type="number" id="humidity" placeholder="e.g. 60"></div>
+    <div class="form-group"><label>Soil Moisture (%)</label><input type="number" id="moisture" placeholder="e.g. 30"></div>
+    <div class="form-group"><label>Recent Rainfall (mm)</label><input type="number" id="rainfall" placeholder="e.g. 50"><span class="hint">Past 7 days rainfall</span></div>
+    <div class="form-group">
+      <label>Soil Type</label>
+      <select id="soil_type"><option value="">— Select —</option>{% for s in soil_types %}<option>{{s}}</option>{% endfor %}</select>
+    </div>
+    <div class="form-group">
+      <label>Crop Type</label>
+      <select id="crop_type"><option value="">— Select —</option>{% for c in crop_types %}<option>{{c}}</option>{% endfor %}</select>
+    </div>
+  </div>
+  <button class="btn-predict" onclick="predict()">
+    <span class="spinner" id="spinner"></span>
+    <span id="btn-text">💧 Calculate Water Need</span>
+  </button>
+</div>
+<div class="result-box" id="result">
+  <div class="result-icon">💧</div>
+  <div class="result-label">Irrigation Requirement</div>
+  <div class="result-value" id="result-value">—</div>
+  <div class="confidence-bar-wrap">
+    <div class="confidence-label"><span>Model Confidence</span><span id="conf-num">—</span></div>
+    <div class="confidence-bar"><div class="confidence-fill" id="conf-fill" style="width:0%"></div></div>
+  </div>
+</div>
+<script>
+async function predict() {
+  const fields=['temperature','humidity','moisture','rainfall','soil_type','crop_type'];
+  const data={};
+  for(const f of fields){const v=document.getElementById(f).value;if(!v){alert('Fill all fields!');return;}data[f]=v;}
+  document.getElementById('spinner').style.display='inline-block';
+  document.getElementById('btn-text').textContent='Analysing...';
+  const res=await fetch('/predict/irrigation',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
+  const json=await res.json();
+  document.getElementById('spinner').style.display='none';
+  document.getElementById('btn-text').textContent='💧 Calculate Water Need';
+  if(json.error){alert('Error: '+json.error);return;}
+  const rv=document.getElementById('result-value');
+  rv.textContent=json.result;
+  const colorMap={'Low':'risk-low','Moderate':'risk-medium','High':'risk-high'};
+  rv.className='result-value '+(colorMap[json.result]||'');
+  document.getElementById('conf-num').textContent=json.confidence+'%';
+  document.getElementById('conf-fill').style.width=json.confidence+'%';
+  document.getElementById('result').classList.add('show');
+}
+</script>
+{% endblock %}

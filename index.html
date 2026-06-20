@@ -1,0 +1,180 @@
+{% extends "base.html" %}
+{% block title %}Agri-Smart — Dashboard{% endblock %}
+{% block content %}
+
+<style>
+  .hero {
+    margin-bottom: 48px;
+  }
+  .hero-tag {
+    font-size: 0.72rem; letter-spacing: 2.5px;
+    text-transform: uppercase; color: var(--sage);
+    margin-bottom: 14px; display: flex; align-items: center; gap: 8px;
+  }
+  .hero-tag::before {
+    content:''; display:inline-block;
+    width: 24px; height: 1px; background: var(--sage);
+  }
+  .hero h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 3.6rem; font-weight: 700;
+    line-height: 1.05; color: var(--cream);
+    max-width: 680px;
+  }
+  .hero h1 em {
+    font-style: italic; color: var(--gold);
+  }
+  .hero p {
+    margin-top: 16px; color: var(--sand);
+    font-size: 1rem; font-weight: 300;
+    max-width: 520px; line-height: 1.65;
+  }
+
+  .model-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 20px;
+    margin-top: 12px;
+  }
+
+  .model-card {
+    background: rgba(74,44,18,0.45);
+    border: 1px solid rgba(200,151,42,0.18);
+    border-radius: 14px; padding: 28px;
+    text-decoration: none; color: inherit;
+    transition: all 0.25s; position: relative; overflow: hidden;
+    display: flex; flex-direction: column; gap: 12px;
+  }
+  .model-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: var(--card-color, var(--gold));
+    transform: scaleX(0); transform-origin: left;
+    transition: transform 0.3s;
+  }
+  .model-card:hover { 
+    border-color: rgba(200,151,42,0.45);
+    transform: translateY(-3px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.25);
+  }
+  .model-card:hover::before { transform: scaleX(1); }
+
+  .model-card .card-icon { font-size: 2rem; }
+  .model-card h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.3rem; font-weight: 600; color: var(--cream);
+  }
+  .model-card p {
+    font-size: 0.82rem; color: var(--sand);
+    font-weight: 300; line-height: 1.55;
+  }
+  .model-card .card-footer {
+    margin-top: auto;
+    display: flex; align-items: center; justify-content: space-between;
+    padding-top: 14px;
+    border-top: 1px solid rgba(200,151,42,0.12);
+  }
+  .model-card .features-count {
+    font-size: 0.7rem; color: var(--mist);
+    letter-spacing: 0.5px;
+  }
+  .model-card .arrow {
+    color: var(--gold); font-size: 1.1rem;
+    transition: transform 0.2s;
+  }
+  .model-card:hover .arrow { transform: translateX(4px); }
+
+  .stats-row {
+    display: flex; gap: 20px; margin-bottom: 40px; flex-wrap: wrap;
+  }
+  .stat-item {
+    background: rgba(74,44,18,0.35);
+    border: 1px solid rgba(200,151,42,0.15);
+    border-radius: 10px; padding: 18px 24px;
+    flex: 1; min-width: 130px;
+  }
+  .stat-item .num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.2rem; font-weight: 700; color: var(--gold);
+  }
+  .stat-item .lbl {
+    font-size: 0.72rem; color: var(--mist);
+    letter-spacing: 1px; text-transform: uppercase;
+    margin-top: 2px;
+  }
+</style>
+
+<div class="hero">
+  <div class="hero-tag">AI-Powered Agriculture</div>
+  <h1>Smart Farming <em>Intelligence</em><br>for Better Harvests</h1>
+  <p>Five machine learning models working together to help farmers make data-driven decisions about crops, soil health, and resources.</p>
+</div>
+
+<div class="stats-row">
+  <div class="stat-item"><div class="num">5</div><div class="lbl">AI Models</div></div>
+  <div class="stat-item"><div class="num">11</div><div class="lbl">Crop Types</div></div>
+  <div class="stat-item"><div class="num">5</div><div class="lbl">Soil Types</div></div>
+  <div class="stat-item"><div class="num">10</div><div class="lbl">Fertilizers</div></div>
+</div>
+
+<div class="page-header">
+  <div class="breadcrumb">Select a Model</div>
+  <h2>Prediction Modules</h2>
+  <p>Choose a model below to make AI-powered predictions</p>
+</div>
+
+<div class="model-grid">
+
+  <a href="/fertilizer" class="model-card" style="--card-color: #C8972A">
+    <div class="card-icon">🧪</div>
+    <h3>Fertilizer Recommendation</h3>
+    <p>Enter your soil's nutrient levels, type, and crop to get the best fertilizer recommendation for maximum yield.</p>
+    <div class="card-footer">
+      <span class="features-count">8 input features · GradientBoost</span>
+      <span class="arrow">→</span>
+    </div>
+  </a>
+
+  <a href="/crop" class="model-card" style="--card-color: #7FA650">
+    <div class="card-icon">🌱</div>
+    <h3>Crop Recommendation</h3>
+    <p>Based on N-P-K levels, pH, temperature, humidity, and rainfall — discover the ideal crop for your land.</p>
+    <div class="card-footer">
+      <span class="features-count">7 input features · RandomForest</span>
+      <span class="arrow">→</span>
+    </div>
+  </a>
+
+  <a href="/fertility" class="model-card" style="--card-color: #8B5E3C">
+    <div class="card-icon">🌍</div>
+    <h3>Soil Fertility Score</h3>
+    <p>Analyze your soil's health by measuring nutrients, pH, organic matter, and moisture content.</p>
+    <div class="card-footer">
+      <span class="features-count">6 input features · GradientBoost</span>
+      <span class="arrow">→</span>
+    </div>
+  </a>
+
+  <a href="/irrigation" class="model-card" style="--card-color: #4A9ECC">
+    <div class="card-icon">💧</div>
+    <h3>Irrigation Need</h3>
+    <p>Determine how much water your crop needs based on temperature, soil moisture, humidity and rainfall data.</p>
+    <div class="card-footer">
+      <span class="features-count">6 input features · RandomForest</span>
+      <span class="arrow">→</span>
+    </div>
+  </a>
+
+  <a href="/disease" class="model-card" style="--card-color: #CC4A4A">
+    <div class="card-icon">🦠</div>
+    <h3>Crop Disease Risk</h3>
+    <p>Predict the likelihood of crop disease outbreaks based on current weather and environmental conditions.</p>
+    <div class="card-footer">
+      <span class="features-count">5 input features · GradientBoost</span>
+      <span class="arrow">→</span>
+    </div>
+  </a>
+
+</div>
+
+{% endblock %}

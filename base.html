@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>{% block title %}Agri-Smart{% endblock %}</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --soil:    #2C1A0E;
+      --earth:   #4A2C12;
+      --bark:    #6B3E20;
+      --moss:    #2D5016;
+      --leaf:    #4A7C24;
+      --sage:    #7FA650;
+      --cream:   #F5EDD8;
+      --parchment: #EDE0C4;
+      --gold:    #C8972A;
+      --sand:    #D4B483;
+      --mist:    #A8B89A;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--soil);
+      color: var(--cream);
+      min-height: 100vh;
+      background-image:
+        radial-gradient(ellipse at 20% 0%, rgba(74,124,36,0.12) 0%, transparent 60%),
+        radial-gradient(ellipse at 80% 100%, rgba(200,151,42,0.08) 0%, transparent 50%);
+    }
+
+    /* ── SIDEBAR NAV ── */
+    .sidebar {
+      position: fixed; top: 0; left: 0;
+      width: 240px; height: 100vh;
+      background: var(--earth);
+      border-right: 1px solid rgba(200,151,42,0.2);
+      display: flex; flex-direction: column;
+      z-index: 100;
+      background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23C8972A' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+
+    .sidebar-brand {
+      padding: 28px 20px 20px;
+      border-bottom: 1px solid rgba(200,151,42,0.2);
+    }
+    .sidebar-brand .logo-icon {
+      font-size: 2rem; display: block; margin-bottom: 8px;
+    }
+    .sidebar-brand h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.5rem; font-weight: 700;
+      color: var(--gold); letter-spacing: 0.5px;
+    }
+    .sidebar-brand p {
+      font-size: 0.72rem; color: var(--sand);
+      letter-spacing: 1.5px; text-transform: uppercase; margin-top: 2px;
+    }
+
+    .nav-section { padding: 18px 12px 8px; }
+    .nav-label {
+      font-size: 0.62rem; letter-spacing: 2px;
+      text-transform: uppercase; color: var(--mist);
+      padding: 0 8px; margin-bottom: 6px;
+    }
+
+    .nav-link {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 14px; border-radius: 8px;
+      color: var(--parchment); text-decoration: none;
+      font-size: 0.875rem; font-weight: 400;
+      transition: all 0.2s; margin-bottom: 2px;
+    }
+    .nav-link:hover, .nav-link.active {
+      background: rgba(200,151,42,0.15);
+      color: var(--gold);
+    }
+    .nav-link .icon { font-size: 1.1rem; width: 22px; text-align: center; }
+    .nav-link .badge {
+      margin-left: auto; font-size: 0.6rem;
+      background: var(--moss); color: var(--sage);
+      padding: 2px 7px; border-radius: 20px;
+      letter-spacing: 0.5px;
+    }
+
+    .sidebar-footer {
+      margin-top: auto; padding: 16px;
+      border-top: 1px solid rgba(200,151,42,0.15);
+      font-size: 0.72rem; color: var(--sand); text-align: center;
+    }
+
+    /* ── MAIN CONTENT ── */
+    .main {
+      margin-left: 240px;
+      min-height: 100vh;
+      padding: 40px 44px;
+    }
+
+    /* ── PAGE HEADER ── */
+    .page-header {
+      margin-bottom: 36px;
+    }
+    .page-header .breadcrumb {
+      font-size: 0.75rem; color: var(--mist);
+      letter-spacing: 1px; text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .page-header h2 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2.4rem; font-weight: 700;
+      color: var(--cream); line-height: 1.1;
+    }
+    .page-header p {
+      color: var(--sand); font-size: 0.9rem;
+      margin-top: 6px; font-weight: 300;
+    }
+
+    /* ── FORM CARD ── */
+    .card {
+      background: rgba(74,44,18,0.5);
+      border: 1px solid rgba(200,151,42,0.18);
+      border-radius: 14px;
+      padding: 30px 32px;
+      backdrop-filter: blur(4px);
+      margin-bottom: 24px;
+    }
+    .card-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.1rem; font-weight: 600;
+      color: var(--gold); margin-bottom: 22px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid rgba(200,151,42,0.15);
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 18px;
+    }
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    .form-group label {
+      font-size: 0.72rem; letter-spacing: 1.2px;
+      text-transform: uppercase; color: var(--mist);
+      font-weight: 500;
+    }
+    .form-group input, .form-group select {
+      background: rgba(44,26,14,0.6);
+      border: 1px solid rgba(200,151,42,0.25);
+      border-radius: 8px; padding: 10px 14px;
+      color: var(--cream); font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem; outline: none;
+      transition: border-color 0.2s;
+    }
+    .form-group input:focus, .form-group select:focus {
+      border-color: var(--gold);
+    }
+    .form-group select option { background: var(--earth); }
+    .form-group .hint {
+      font-size: 0.7rem; color: var(--mist); font-weight: 300;
+    }
+
+    /* ── BUTTON ── */
+    .btn-predict {
+      margin-top: 24px;
+      background: linear-gradient(135deg, var(--leaf), var(--moss));
+      border: none; border-radius: 10px;
+      padding: 14px 36px; color: var(--cream);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.9rem; font-weight: 600;
+      letter-spacing: 0.5px; cursor: pointer;
+      transition: all 0.25s;
+      display: inline-flex; align-items: center; gap: 8px;
+    }
+    .btn-predict:hover {
+      background: linear-gradient(135deg, var(--sage), var(--leaf));
+      transform: translateY(-1px);
+      box-shadow: 0 8px 24px rgba(45,80,22,0.4);
+    }
+    .btn-predict:active { transform: translateY(0); }
+
+    /* ── RESULT BOX ── */
+    .result-box {
+      display: none;
+      background: linear-gradient(135deg, rgba(45,80,22,0.3), rgba(74,44,18,0.4));
+      border: 1px solid rgba(127,166,80,0.4);
+      border-radius: 14px; padding: 28px 32px;
+      margin-top: 24px; text-align: center;
+      animation: fadeUp 0.4s ease;
+    }
+    .result-box.show { display: block; }
+    .result-box .result-label {
+      font-size: 0.7rem; letter-spacing: 2px;
+      text-transform: uppercase; color: var(--sage);
+      margin-bottom: 8px;
+    }
+    .result-box .result-value {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2.8rem; font-weight: 700;
+      color: var(--gold); line-height: 1;
+      margin-bottom: 10px;
+    }
+    .result-box .confidence-bar-wrap {
+      max-width: 240px; margin: 12px auto 0;
+    }
+    .result-box .confidence-label {
+      font-size: 0.75rem; color: var(--mist);
+      display: flex; justify-content: space-between;
+      margin-bottom: 4px;
+    }
+    .confidence-bar {
+      height: 6px; background: rgba(200,151,42,0.15);
+      border-radius: 3px; overflow: hidden;
+    }
+    .confidence-fill {
+      height: 100%; background: var(--gold);
+      border-radius: 3px; transition: width 0.8s ease;
+    }
+    .result-box .result-icon { font-size: 2.5rem; margin-bottom: 8px; }
+
+    /* ── RISK BADGE ── */
+    .risk-low    { color: #7eca5b; }
+    .risk-medium { color: #e5a225; }
+    .risk-high   { color: #e05555; }
+
+    /* ── SPINNER ── */
+    .spinner {
+      display: none; width: 20px; height: 20px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: white; border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="sidebar-brand">
+    <span class="logo-icon">🌾</span>
+    <h1>Agri-Smart</h1>
+    <p>AI Farming Intelligence</p>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-label">Dashboard</div>
+    <a href="/" class="nav-link {% if request.path == '/' %}active{% endif %}">
+      <span class="icon">🏠</span> Overview
+    </a>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-label">Predictions</div>
+    <a href="/fertilizer" class="nav-link {% if '/fertilizer' in request.path %}active{% endif %}">
+      <span class="icon">🧪</span> Fertilizer
+    </a>
+    <a href="/crop" class="nav-link {% if '/crop' in request.path %}active{% endif %}">
+      <span class="icon">🌱</span> Crop Recommend
+    </a>
+    <a href="/fertility" class="nav-link {% if '/fertility' in request.path %}active{% endif %}">
+      <span class="icon">🌍</span> Soil Fertility
+    </a>
+    <a href="/irrigation" class="nav-link {% if '/irrigation' in request.path %}active{% endif %}">
+      <span class="icon">💧</span> Irrigation Need
+    </a>
+    <a href="/disease" class="nav-link {% if '/disease' in request.path %}active{% endif %}">
+      <span class="icon">🦠</span> Disease Risk
+      <span class="badge">AI</span>
+    </a>
+  </div>
+
+  <div class="sidebar-footer">
+    5 AI Models Active &nbsp;·&nbsp; Built with Flask
+  </div>
+</nav>
+
+<!-- MAIN -->
+<main class="main">
+  {% block content %}{% endblock %}
+</main>
+
+</body>
+</html>

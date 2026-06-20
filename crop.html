@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% block title %}Crop Recommendation — Agri-Smart{% endblock %}
+{% block content %}
+
+<div class="page-header">
+  <div class="breadcrumb">Predictions / Crop</div>
+  <h2>🌱 Crop Recommendation</h2>
+  <p>Provide your soil nutrient profile and weather data to find the best crop for your field</p>
+</div>
+
+<div class="card">
+  <div class="card-title">⚗️ Soil Nutrients (kg/ha)</div>
+  <div class="form-grid">
+    <div class="form-group">
+      <label>Nitrogen (N)</label>
+      <input type="number" id="nitrogen" placeholder="e.g. 60" min="0" max="140">
+    </div>
+    <div class="form-group">
+      <label>Phosphorous (P)</label>
+      <input type="number" id="phosphorous" placeholder="e.g. 40" min="5" max="145">
+    </div>
+    <div class="form-group">
+      <label>Potassium (K)</label>
+      <input type="number" id="potassium" placeholder="e.g. 50" min="5" max="205">
+    </div>
+    <div class="form-group">
+      <label>Soil pH</label>
+      <input type="number" id="ph" placeholder="e.g. 6.5" min="3.5" max="9.5" step="0.1">
+      <span class="hint">3.5 (acidic) → 9.5 (alkaline)</span>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title">🌤 Weather & Climate</div>
+  <div class="form-grid">
+    <div class="form-group">
+      <label>Temperature (°C)</label>
+      <input type="number" id="temperature" placeholder="e.g. 25" min="8" max="44">
+    </div>
+    <div class="form-group">
+      <label>Humidity (%)</label>
+      <input type="number" id="humidity" placeholder="e.g. 70" min="14" max="100">
+    </div>
+    <div class="form-group">
+      <label>Rainfall (mm)</label>
+      <input type="number" id="rainfall" placeholder="e.g. 120" min="20" max="300">
+    </div>
+  </div>
+  <button class="btn-predict" onclick="predict()">
+    <span class="spinner" id="spinner"></span>
+    <span id="btn-text">🌾 Recommend Best Crop</span>
+  </button>
+</div>
+
+<div class="result-box" id="result">
+  <div class="result-icon">🌾</div>
+  <div class="result-label">Best Crop for Your Field</div>
+  <div class="result-value" id="result-value">—</div>
+  <div class="confidence-bar-wrap">
+    <div class="confidence-label">
+      <span>Model Confidence</span><span id="conf-num">—</span>
+    </div>
+    <div class="confidence-bar">
+      <div class="confidence-fill" id="conf-fill" style="width:0%"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+async function predict() {
+  const fields = ['nitrogen','phosphorous','potassium','ph','temperature','humidity','rainfall'];
+  const data = {};
+  for (const f of fields) {
+    const v = document.getElementById(f).value;
+    if (!v) { alert('Please fill all fields!'); return; }
+    data[f] = v;
+  }
+  document.getElementById('spinner').style.display = 'inline-block';
+  document.getElementById('btn-text').textContent = 'Analysing...';
+  const res  = await fetch('/predict/crop', {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify(data)
+  });
+  const json = await res.json();
+  document.getElementById('spinner').style.display = 'none';
+  document.getElementById('btn-text').textContent = '🌾 Recommend Best Crop';
+  if (json.error) { alert('Error: ' + json.error); return; }
+  document.getElementById('result-value').textContent = json.result;
+  document.getElementById('conf-num').textContent = json.confidence + '%';
+  document.getElementById('conf-fill').style.width = json.confidence + '%';
+  const box = document.getElementById('result');
+  box.classList.add('show');
+  box.scrollIntoView({ behavior:'smooth', block:'nearest' });
+}
+</script>
+{% endblock %}
